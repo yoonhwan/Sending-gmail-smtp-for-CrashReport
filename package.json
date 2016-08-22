@@ -1,0 +1,12 @@
+
+{
+    "name": "Sending gmail smtp for CrashReport",
+    "description": "CrashReporter Client Middleware",
+    "version": "0.0.1",
+    "private": false,
+    "dependencies": {
+        "express": "4.x",
+	"gmail-send": "1.x",
+	"moment": "2.x"
+    }
+}
