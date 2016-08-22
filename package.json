@@ -4,6 +4,9 @@
     "description": "CrashReporter Client Middleware",
     "version": "0.0.1",
     "private": true,
+    "scripts": {
+        "start":"server.js"
+    },
     "dependencies": {
         "express": "4.x",
 	"gmail-send": "1.x",

@@ -122,7 +122,8 @@ app.get('/sendmail/:id', function(req, res) {
                             });
     }else
     {
-        res.send("image raw not found");
+        console.log("image raw not found");
+        sendmail(recive_params['sender'][senderID], recive_params['reciver'], recive_params['replyTo'], recive_params['subject'], recive_params['text'], file, callback);
     }
         
 //    res.send("send finish to :"+req.query.to);
