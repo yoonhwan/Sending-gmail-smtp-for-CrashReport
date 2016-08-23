@@ -24,12 +24,12 @@ function file_base64_decode(base64str, file) {
     console.log('******** File created from base64 encoded string ********');
 }
 
-function mail_server(id, pwd, smtp) {
+function mail_server(id, pwd, smtp, ssl) {
     const option_server = {
     user: id,
     password: pwd,
     host: smtp,//'mailneo.ds.neowiz.com',
-    ssl: true//false
+    ssl: ssl//false
     };
     return email.server.connect(option_server);
 }
@@ -96,7 +96,7 @@ app.get('/sendmail/:id', function(req, res) {
         
         }
         
-        mail_server(sender['ID'], sender['PWD'], sender['smtp']).send(message, function (err, message) {
+        mail_server(sender['ID'], sender['PWD'], sender['smtp'], sender['ssl']).send(message, function (err, message) {
                                                                         if(err) {
                                                                             cb(err || message);
                                                                             console.log(err || message);
