@@ -1,6 +1,6 @@
 
 {
-    "name": "Sending gmail smtp for CrashReport",
+    "name": "Server_Sending_smtp_of_CrashReport",
     "description": "CrashReporter Client Middleware",
     "version": "0.0.1",
     "private": true,
@@ -10,6 +10,7 @@
     "dependencies": {
         "express": "4.x",
 	"gmail-send": "1.x",
-	"moment": "2.x"
+	"moment": "2.x",
+        "emailjs":"1.x"
     }
 }

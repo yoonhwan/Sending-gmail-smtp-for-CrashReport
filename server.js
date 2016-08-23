@@ -5,6 +5,7 @@ var app = express();
 var path = require('path'),
     fs = require('fs');
     moment = require('moment');
+var email 	= require('emailjs/email');
 
 // function to encode file data to base64 encoded string
 function file_base64_encode(file) {
@@ -23,34 +24,33 @@ function file_base64_decode(base64str, file) {
     console.log('******** File created from base64 encoded string ********');
 }
 
+function mail_server(id, pwd, smtp) {
+    const option_server = {
+    user: id,
+    password: pwd,
+    host: smtp,//'mailneo.ds.neowiz.com',
+    ssl: true//false
+    };
+    return email.server.connect(option_server);
+}
+
 var testJson=
  '{\
     "sender" : [\
         {\
             "ID":"yoonhwan.ko@gmail.com",\
-            "PWD":"xlglkzwzwqpmmsiv"\
+            "PWD":""\
         },\
         {\
             "ID":"yoonhwan.ko@gmail.com",\
-            "PWD":"ggoggo07#@"\
+            "PWD":""\
         }\
     ],\
     "reciver" : "yoonhwan.ko@neowiz.com;yoonhwan.ko@gmail.com",\
-    "replyTo" : "yoonhwan.ko@neowiz.com",\
+    "from" : "yoonhwan.ko@neowiz.com",\
     "subject" : "test subject",\
     "text" : "test text"\
  }';
-
-var send = require('gmail-send')({
-                                 user: '',               // Your GMail account used to send emails
-                                 pass: '',             // Application-specific password
-                                 to:   '"User" <yoonhwan.ko@neowiz.com>',      // Send back to yourself
-                                 // from:   '"User" <user@gmail.com>'  // from: by default equals to user
-                                 // replyTo:'user@gmail.com'           // replyTo: by default undefined
-                                 subject: 'test subject',
-                                 text:    'test text'
-                                 // html:    '<b>html text text</b>'
-                                 });
 
 app.get('/wines', function(req, res) {
     res.send([{name:'wine1'}, {name:'wine2'}]);
@@ -68,24 +68,42 @@ app.get('/sendmail/:id', function(req, res) {
     var senderID = 0;
     var senderIDMax = recive_params['sender'].length-1;
     
-    var sendmail = function (sender, reciver, replyTo, subject, text, file, cb){
+    var sendmail = function (sender, reciver, from, subject, text, file, cb){
         
-        console.log(sender['ID'] + ":" + reciver + ":" + replyTo);
+        console.log(sender['ID'] + ":" + reciver + ":" + from);
         // Override any default option and send email
-            send({
-                 subject: subject,
-                 text: text,
-                 to: reciver,
-                 replayTo: replyTo,
-                 files: [file],                // String or array of strings of filenames to attach
-                 
-                 user: sender['ID'],
-                 pass: sender['PWD'],
-                 },
-                 function (err, res) {
-                     cb(err);
-                 }
-                 );
+        var message= {
+        text:	text,
+        from:	from,
+        to:		reciver,
+        subject:	subject
+        };
+    
+        if(file)
+        {
+            message= {
+                text: text,
+                from:	from,
+                to:		reciver,
+                subject:	subject,
+                attachment:
+                [
+                 {path:file, type:"image/png", name:file}
+                 ]
+            };
+        
+            console.log(message);
+        
+        }
+        
+        mail_server(sender['ID'], sender['PWD'], sender['smtp']).send(message, function (err, message) {
+                                                                        if(err) {
+                                                                            cb(err || message);
+                                                                            console.log(err || message);
+                                                                        }else
+                                                                            cb('');
+             }
+         );
 
         };
         
@@ -95,14 +113,16 @@ app.get('/sendmail/:id', function(req, res) {
             if(senderID != senderIDMax)
             {
                 senderID += 1;
-                sendmail(recive_params['sender'][senderID], recive_params['reciver'], recive_params['replyTo'], recive_params['subject'], recive_params['text'], file, callback);
+                sendmail(recive_params['sender'][senderID], recive_params['reciver'], recive_params['from'], recive_params['subject'], recive_params['text'], file, callback);
             }else   {
-                res.send("send fail");
+                res.send("send fail : " || err);
+                if(file)
+                    fs.unlink(file);
             }
         }else  {
         
             if(file)
-		fs.unlink(file);
+                fs.unlink(file);
             res.send("send success");
         
         
@@ -118,14 +138,14 @@ app.get('/sendmail/:id', function(req, res) {
                                 if(err){
                                     console.log(err);
                                 }else{
-                                    sendmail(recive_params['sender'][senderID], recive_params['reciver'], recive_params['replyTo'], recive_params['subject'], recive_params['text'], file, callback);
+                                    sendmail(recive_params['sender'][senderID], recive_params['reciver'], recive_params['from'], recive_params['subject'], recive_params['text'], file, callback);
                                 }
                             });
     }else
     {
-	file = '';
+        file = '';
         console.log("image raw not found");
-        sendmail(recive_params['sender'][senderID], recive_params['reciver'], recive_params['replyTo'], recive_params['subject'], recive_params['text'], file, callback);
+        sendmail(recive_params['sender'][senderID], recive_params['reciver'], recive_params['from'], recive_params['subject'], recive_params['text'], file, callback);
     }
         
 //    res.send("send finish to :"+req.query.to);
