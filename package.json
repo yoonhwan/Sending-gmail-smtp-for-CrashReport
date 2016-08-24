@@ -9,6 +9,7 @@
     },
     "dependencies": {
         "express": "4.x",
+	"body-parser": "x.x",
 	"gmail-send": "1.x",
 	"moment": "2.x",
         "emailjs":"1.x"

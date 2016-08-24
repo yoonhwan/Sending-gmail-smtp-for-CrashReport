@@ -2,6 +2,12 @@
 // server.js
 var express = require('express');
 var app = express();
+var bodyParser = require('body-parser')
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+                              extended: true
+                              }));
+
 var path = require('path'),
     fs = require('fs');
     moment = require('moment');
@@ -59,14 +65,42 @@ app.get('/wines/:id', function(req, res) {
     res.send({id:req.params.id, name: "The Name", description: "description"});
 });
 
+app.post('/sendmail/:id', function(req, res)   {
+    var recive_params;
+    if(req.body && req.body.data && req.body.data.length >0)
+        recive_params = JSON.parse(new Buffer(req.body.data, 'base64').toString('utf8'));
+    else    {
+        console.log("crashreport reponse err : parameter data error");
+        res.send("data error");
+        return;
+    }
+         
+    RunMailProcess(recive_params, res);
+});
+
 app.get('/sendmail/:id', function(req, res) {
         
+    var recive_params;
+    if(req.query.data && req.query.data.length >0)
+        recive_params = JSON.parse(new Buffer(req.query.data, 'base64').toString('utf8'));//JSON.parse(testJson);
+    else    {
+        console.log("crashreport reponse err : parameter data error");
+        res.send("data error");
+        return;
+    }
+        
+    RunMailProcess(recive_params, res);
+
+});
+
+function RunMailProcess(data, res)  {
     var now = moment();
     var file = now.format('x')+'.png';        // File to attach
     
     console.log("crashreport recv " + now.format('YYYY-MM-DD HH:MM:SS'));
-        
-    var recive_params = JSON.parse(new Buffer(req.query.data, 'base64').toString('utf8'));//JSON.parse(testJson);
+    
+    var recive_params = data;
+    
     var senderID = 0;
     var senderIDMax = recive_params['sender'].length-1;
     
@@ -154,7 +188,7 @@ app.get('/sendmail/:id', function(req, res) {
     }
         
 //    res.send("send finish to :"+req.query.to);
-});
+}
  
 app.listen(3000);
 console.log('Express Listening on port 3000...');
