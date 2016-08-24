@@ -3,9 +3,9 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser')
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-                              extended: true
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({extended: true,
+                              limit: '50mb'
                               }));
 
 var path = require('path'),
