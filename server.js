@@ -64,7 +64,7 @@ app.get('/sendmail/:id', function(req, res) {
     var now = moment();
     var file = now.format('x')+'.png';        // File to attach
     
-    console.log("crashreport start " + now.format('YYYY-MM-DD HH:MM:SS'));
+    console.log("crashreport recv " + now.format('YYYY-MM-DD HH:MM:SS'));
         
     var recive_params = JSON.parse(new Buffer(req.query.data, 'base64').toString('utf8'));//JSON.parse(testJson);
     var senderID = 0;
@@ -120,6 +120,9 @@ app.get('/sendmail/:id', function(req, res) {
                 res.send("send fail : " + err);
                 if(file)
                     fs.unlink(file);
+        
+                console.log("crashreport reponse err : " + err);
+        
             }
         }else  {
         
@@ -127,7 +130,7 @@ app.get('/sendmail/:id', function(req, res) {
                 fs.unlink(file);
             res.send("send success");
         
-        
+            console.log("crashreport reponse");
         }
     }
      
