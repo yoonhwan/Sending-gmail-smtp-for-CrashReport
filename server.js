@@ -64,13 +64,15 @@ app.get('/sendmail/:id', function(req, res) {
     var now = moment();
     var file = now.format('x')+'.png';        // File to attach
     
+    console.log("crashreport start " + now.format('YYYY-MM-DD HH:MM:SS'));
+        
     var recive_params = JSON.parse(new Buffer(req.query.data, 'base64').toString('utf8'));//JSON.parse(testJson);
     var senderID = 0;
     var senderIDMax = recive_params['sender'].length-1;
     
     var sendmail = function (sender, reciver, from, subject, text, file, cb){
         
-        console.log(sender['ID'] + ":" + reciver + ":" + from);
+//        console.log(sender['ID'] + ":" + reciver + ":" + from);
         // Override any default option and send email
         var message= {
         text:	text,
@@ -92,7 +94,7 @@ app.get('/sendmail/:id', function(req, res) {
                  ]
             };
         
-            console.log(message);
+//            console.log(message);
         
         }
         
@@ -115,7 +117,7 @@ app.get('/sendmail/:id', function(req, res) {
                 senderID += 1;
                 sendmail(recive_params['sender'][senderID], recive_params['reciver'], recive_params['from'], recive_params['subject'], recive_params['text'], file, callback);
             }else   {
-                res.send("send fail : " || err);
+                res.send("send fail : " + err);
                 if(file)
                     fs.unlink(file);
             }
@@ -136,7 +138,7 @@ app.get('/sendmail/:id', function(req, res) {
         //save image
         fs.writeFile(file, recive_params['raw'], 'base64', function(err) {
                                 if(err){
-                                    console.log(err);
+//                                    console.log(err);
                                 }else{
                                     sendmail(recive_params['sender'][senderID], recive_params['reciver'], recive_params['from'], recive_params['subject'], recive_params['text'], file, callback);
                                 }
@@ -144,7 +146,7 @@ app.get('/sendmail/:id', function(req, res) {
     }else
     {
         file = '';
-        console.log("image raw not found");
+//        console.log("image raw not found");
         sendmail(recive_params['sender'][senderID], recive_params['reciver'], recive_params['from'], recive_params['subject'], recive_params['text'], file, callback);
     }
         
