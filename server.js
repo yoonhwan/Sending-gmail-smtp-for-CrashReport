@@ -136,6 +136,7 @@ function RunMailProcess(data, res)  {
                                                                         if(err) {
                                                                             cb(err || message);
                                                                             console.log(err || message);
+                                                                            console.log(sender['id'] + " : " + sender['smtp'] + ":" + sender['ssl']);
                                                                         }else
                                                                             cb('');
              }
@@ -155,7 +156,6 @@ function RunMailProcess(data, res)  {
                 if(file)
                     fs.unlink(file);
         
-                console.log(recive_params['sender'][senderID]['id'] + " : " + recive_params['sender'][senderID]['smtp'] + ":" + recive_params['sender'][senderID]['ssl']);
                 console.log("crashreport reponse err : " + err);
         
             }
