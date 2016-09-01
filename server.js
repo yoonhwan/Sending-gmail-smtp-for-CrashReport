@@ -106,7 +106,7 @@ function RunMailProcess(data, res)  {
     
     var sendmail = function (sender, reciver, from, subject, text, file, cb){
         
-//        console.log(sender['ID'] + ":" + reciver + ":" + from);
+//        console.log(sender['id'] + ":" + reciver + ":" + from);
         // Override any default option and send email
         var message= {
         text:	text,
@@ -155,6 +155,7 @@ function RunMailProcess(data, res)  {
                 if(file)
                     fs.unlink(file);
         
+                console.log(recive_params['sender'][senderID]['id'] + " : " + recive_params['sender'][senderID]['smtp'] + ":" + recive_params['sender'][senderID]['ssl']);
                 console.log("crashreport reponse err : " + err);
         
             }
