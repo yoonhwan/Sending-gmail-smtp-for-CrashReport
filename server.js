@@ -44,12 +44,12 @@ var testJson=
  '{\
     "sender" : [\
         {\
-            "ID":"yoonhwan.ko@gmail.com",\
-            "PWD":""\
+            "id":"yoonhwan.ko@gmail.com",\
+            "pwd":""\
         },\
         {\
-            "ID":"yoonhwan.ko@gmail.com",\
-            "PWD":""\
+            "id":"yoonhwan.ko@gmail.com",\
+            "pwd":""\
         }\
     ],\
     "reciver" : "yoonhwan.ko@neowiz.com;yoonhwan.ko@gmail.com",\
@@ -132,7 +132,7 @@ function RunMailProcess(data, res)  {
         
         }
         
-        mail_server(sender['ID'], sender['PWD'], sender['smtp'], sender['ssl']).send(message, function (err, message) {
+        mail_server(sender['id'], sender['pwd'], sender['smtp'], sender['ssl']).send(message, function (err, message) {
                                                                         if(err) {
                                                                             cb(err || message);
                                                                             console.log(err || message);
